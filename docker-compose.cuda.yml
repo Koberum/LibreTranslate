@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   libretranslate-cuda:
@@ -16,3 +16,13 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+    runtime: nvidia
+    networks:
+      - libretranslate_network
+
+networks:
+  libretranslate_network:
+    driver: bridge

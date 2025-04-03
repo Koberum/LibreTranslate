@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 import uuid
+import gc
 from datetime import datetime
 from functools import wraps
 from html import unescape
@@ -37,6 +38,10 @@ from libretranslate.locales import (
 from .api_keys import Database, RemoteDatabase
 from .suggestions import Database as SuggestionsDatabase
 
+def clear_gpu_memory():
+    """Explicitly clear memory and run garbage collection."""
+    # If you're using any other GPU-accelerated library, you can add cleanup steps here
+    gc.collect()  # Run Python garbage collection
 
 def get_version():
     try:
@@ -718,6 +723,9 @@ def create_app(args):
                 if num_alternatives > 0:
                     result["alternatives"] = alternatives
 
+                # Perform memory cleanup after processing
+                clear_gpu_memory()
+                
                 return jsonify(result)
         except Exception as e:
             raise e
